@@ -51,7 +51,7 @@ export default {
   data () {
     return {
       form1: {
-        id: '',
+        id: 0,
         name: '',
         mobile: '',
         lat: '',

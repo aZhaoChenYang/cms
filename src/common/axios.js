@@ -12,10 +12,16 @@ var service = axios.create({
 //添加响应拦截器
 service.interceptors.response.use(function (response) {
   const res = response.data
-  if (res.errno == 4101) {
+  if (res.errno == 4102) {
     location.href = '/cms/#/login'
   }
   return res
+})
+service.interceptors.request.use(function (request) {
+  if (localStorage.getItem('Authorization')) {
+    request.headers.Authorization = localStorage.getItem('Authorization');
+  }
+  return request
 })
 
 export default {

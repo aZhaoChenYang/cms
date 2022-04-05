@@ -18,7 +18,7 @@
     </el-dialog>
     <!-- 显示列表 -->
     <div class="xia">
-      <el-tag v-for="item in tagsdata" closable @close="del_data(item.id)">{{ item.name }}</el-tag>
+      <el-tag v-for="item in tagsdata" closable @close="del_data(item.ID)">{{ item.Name }}</el-tag>
     </div>
   </div>
 </template>
@@ -29,7 +29,7 @@ export default {
     return {
       form: {
         id: '',
-        name: "",
+        name: '',
       },
       dialogVisible: false,
       formLabelWidth: '120px',
@@ -38,45 +38,42 @@ export default {
   },
   methods: {
     // 添加标签
-    add_tag () {
+    async add_tag () {
       this.dialogVisible = false
-      this.$http.post('tags/add_tag', this.form).then(res => {
-        if (res.errno == 0) {
-          this.$message({
-            type: 'success',
-            message: '添加成功'
-          })
-          this.form.name = ""
-          this.get_tag()
-        }
-      })
+      let res = await this.$http.post('tag', this.form)
+      if (res.errno === 0) {
+        this.$message({
+          type: 'success',
+          message: '添加成功'
+        })
+        this.form.name = ''
+        this.get_tag()
+      }
     },
     // 获取全部标签
-    get_tag () {
-      this.$http.get('tags/get_tag').then(res => {
-        this.tagsdata = res.data
-      })
+    async get_tag () {
+      let res = await this.$http.get('tag')
+      this.tagsdata = res.data
     },
     // 删除标签
-    del_data (id) {
-      this.$confirm('确定删除该标签吗?', '提示', {
+    async del_data (id) {
+      await this.$confirm('确定删除该标签吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$http.delete('tags/del_tag?id=' + id).then(res => {
-          if(res.errno == 0){
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.get_tag()
-          }else {
-            this.$message.error(res.errmsg)
-          }
-
-        })
       })
+
+      let res = await this.$http.delete('tag?id=' + id)
+      if (res.errno === 0) {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+        await this.get_tag()
+      } else {
+        this.$message.error(res.errmsg)
+      }
+
     },
     cancel () {
       this.dialogVisible = false

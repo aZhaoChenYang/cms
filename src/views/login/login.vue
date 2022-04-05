@@ -7,7 +7,7 @@
         </el-row>
       </div>
       <div class="xia">
-        <el-input v-model="admin.user" prefix-icon="el-icon-user-solid" class="loginInput">
+        <el-input v-model="admin.username" prefix-icon="el-icon-user-solid" class="loginInput">
         </el-input>
       </div>
       <div class="xia">
@@ -26,19 +26,21 @@
 import {
   Message
 } from 'element-ui'
+import { mapMutations } from 'vuex';
 
 export default {
   data () {
     return {
       admin: {
-        user: '',
+        username: '',
         password: ''
       }
     }
   },
   methods: {
-    jump_to_index () {
-      if (this.admin.user === '') {
+    ...mapMutations(['changeLogin']),
+    async jump_to_index () {
+      if (this.admin.username === '') {
         this.$message('请输入用户名')
         return
       }
@@ -46,19 +48,21 @@ export default {
         this.$message('请输入密码')
         return
       }
-      this.$http.post('admin/login', this.admin).then(res => {
-        if (res.errno == 0) {
-          this.$router.push({
-            path: '/'
-          })
-        } else {
-          Message({
-            message: res.data.errmsg,
-            type: 'error',
-            duration: 5 * 1000
-          })
-        }
-      })
+
+      let res = await this.$http.post('login', this.admin)
+      if (res.errno === 0) {
+        console.log(res.data.token)
+        this.changeLogin({Authorization: res.data.token})
+        await this.$router.push({
+          path: '/'
+        })
+      } else {
+        Message({
+          message: res.errmsg,
+          type: 'error',
+          duration: 5 * 1000
+        })
+      }
     }
   }
 }

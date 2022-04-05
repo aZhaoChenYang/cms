@@ -18,7 +18,7 @@
     </el-dialog>
     <!-- 显示列表 -->
     <div class="xia">
-      <el-tag v-for="item in peopledata" closable @close="del_data(item.id)">{{ item.number }}人</el-tag>
+      <el-tag v-for="item in peopledata" closable @close="del_data(item.ID)">{{ item.Number }}人</el-tag>
     </div>
   </div>
 </template>
@@ -28,7 +28,6 @@ export default {
   data () {
     return {
       form: {
-        id: '',
         number: 0,
       },
       dialogVisible: false,
@@ -38,45 +37,44 @@ export default {
   },
   methods: {
     // 添加标签
-    add_people () {
+    async add_people () {
       this.dialogVisible = false
-      this.$http.post('tags/add_people', this.form).then(res => {
-        if (res.errno == 0) {
-          this.$message({
-            type: 'success',
-            message: '添加成功'
-          })
-          this.form.number = 0
-          this.get_people()
-        }
-      })
+      var res = await this.$http.post('people', this.form)
+      if (res.errno === 0) {
+        this.$message({
+          type: 'success',
+          message: '添加成功'
+        })
+        this.form.number = 0
+        this.get_people()
+      }
     },
     // 获取全部标签
-    get_people () {
-      this.$http.get('tags/get_people').then(res => {
+    async get_people () {
+      var res = await this.$http.get('people')
+      if (res.errno === 0) {
         this.peopledata = res.data
-      })
+      }
+
     },
     // 删除标签
-    del_data (id) {
-      this.$confirm('确定删除该标签吗?', '提示', {
+    async del_data (id) {
+      await this.$confirm('确定删除该标签吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$http.delete('tags/del_people?id=' + id).then(res => {
-          if(res.errno == 0){
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
-            })
-            this.get_people()
-          }else {
-            this.$message.error(res.errmsg)
-          }
-
-        })
       })
+      let res = await this.$http.delete('people?id=' + id)
+      if (res.errno === 0) {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+        await this.get_people()
+      } else {
+        this.$message.error(res.errmsg)
+      }
+
     },
     cancel () {
       this.dialogVisible = false
