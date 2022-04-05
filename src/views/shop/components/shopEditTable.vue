@@ -79,7 +79,7 @@ export default {
   methods: {
     send_data () {
       const editData = JSON.parse(localStorage.getItem('Edit_Data'))
-      this.form1.id = editData.id
+      this.form1.id = editData.ID
       this.form1.name = editData.name
       this.form1.mobile = editData.mobile
       this.form1.lat = editData.lat
@@ -89,14 +89,19 @@ export default {
       this.center.lng = editData.long
       localStorage.removeItem('Edit_Data')
     },
-    onSubmit () {
-      this.$http.post('store/up_store', this.form1).then(res => {
+    async onSubmit () {
+      let res = await this.$http.put('shop', this.form1)
+      if(res.errno === 0){
         this.$message({
           type: 'success',
           message: '修改成功'
         })
         this.$router.go(-1)
-      })
+      } else {
+        this.$message.error(res.errmsg)
+      }
+
+
     },
     shopreturn () {
       this.$router.push({

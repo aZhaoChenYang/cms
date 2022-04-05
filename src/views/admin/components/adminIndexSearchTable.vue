@@ -50,12 +50,12 @@
           width="180">
         </el-table-column>
         <el-table-column
-          prop="Username"
+          prop="username"
           label="用户名"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="Nickname"
+          prop="nickname"
           label="昵称"
           width="180">
         </el-table-column>
@@ -104,9 +104,7 @@ export default {
     // 发送修改数据
     send_editdata (row) {
       this.type = 2
-      this.newAdmin.username = row.Username
-      this.newAdmin.password = row.Password
-      this.newAdmin.nickname = row.Nickname
+      this.newAdmin =  row
       this.dialogVisible = true
     },
     // 修改管理员信息

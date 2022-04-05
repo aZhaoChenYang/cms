@@ -72,30 +72,29 @@ export default {
     BaiduMap
   },
   methods: {
-    onSubmit () {
-      if (this.form1.name == '') {
+    async onSubmit () {
+      if (this.form1.name === '') {
         this.$message('请输入店铺名称')
         return
       }
-      if (this.form1.mobile == '') {
+      if (this.form1.mobile === '') {
         this.$message('请输入联系电话')
         return
       }
-      if (this.form1.lat == '' && this.form1.long == '') {
+      if (this.form1.lat === '' && this.form1.long === '') {
         this.$message('请在地图上选择位置')
         return
       }
-      this.$http.post('store/add_store', this.form1).then(res => {
-        if (res.errno == 0) {
-          this.$message({
-            type: 'success',
-            message: '添加成功'
-          })
-          this.$router.go(-1)
-        } else {
-          this.$message.error(res.errmsg)
-        }
-      })
+      let res = await this.$http.post('shop', this.form1)
+      if (res.errno === 0) {
+        this.$message({
+          type: 'success',
+          message: '添加成功'
+        })
+        this.$router.go(-1)
+      } else {
+        this.$message.error(res.errmsg)
+      }
     },
     shopreturn () {
       this.$router.push({

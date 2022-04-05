@@ -7,12 +7,12 @@
       <el-table :data="tableData" border>
         <el-table-column prop="id" label="编号" width="80">
         </el-table-column>
-        <el-table-column prop="" label="缩略图" width="180">
+        <el-table-column label="缩略图" width="180">
           <template slot-scope="scope">
-              <img style="width: 40%;height: 40%;" :src="scope.row.url"/>
+            <img style="width: 40%;height: 40%;" :src="scope.row.img_url"/>
           </template>
         </el-table-column>
-        <el-table-column prop="store_name" label="店铺" width="180">
+        <el-table-column prop="shop_name" label="店铺" width="180">
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -28,6 +28,7 @@
         <el-col :span="4">图片</el-col>
         <el-col :span="13">
           <el-upload :action="upfile_url" :on-success="upimg_back_fun"
+                     :headers="heads"
                      class="avatar-uploader"
                      :show-file-list="false"
                      name="img">
@@ -39,8 +40,8 @@
       <el-row class="swiperIndex_el_row">
         <el-col :span="4">店铺</el-col>
         <el-col :span="13">
-          <el-select v-model="form.store_id" placeholder="请选择门店">
-            <el-option v-for="(item,index) in shop" :label="item.name" :value="item.id" :key="index"></el-option>
+          <el-select v-model="form.shop_name" placeholder="请选择门店">
+            <el-option v-for="(item,index) in shop" :label="item.name" :value="item.name" :key="index"></el-option>
           </el-select>
         </el-col>
       </el-row>
@@ -61,13 +62,16 @@ export default {
   data () {
     return {
       imageUrl: '',
-      upfile_url: Api_url + 'cms/upload_img',
+      upfile_url: Api_url + 'upload',
+      heads: {
+        Authorization: localStorage.getItem('Authorization')
+      },
       tableData: [],
       dialogFormVisible: false,
       form: {
-        id: "",
-        store_id: '',
-        img_id: ''
+        id: '',
+        imgurl: '',
+        shop_name: ''
       },
       shop: [],
       edit_type: 0,
@@ -80,75 +84,74 @@ export default {
   },
   methods: {
     async upimg_back_fun (res) {
-      if (res.errno == 0) {
-        this.imageUrl = res.data.url
-        this.form.img_id = res.data.id
+      if (res.errno === 0) {
+        this.imageUrl = res.data
         this.$message.success(res.errmsg)
       } else {
         this.$message.error(res.errmsg)
       }
     },
     //删除轮播图
-    del_swiper (id) {
-      this.$confirm('确定删除该图片吗?', '提示', {
+    async del_swiper (id) {
+      await this.$confirm('确定删除该图片吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        this.$http.delete('banner/del_banner?id=' + id).then(res => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          })
-          this.get_allSwiper()
-        })
       })
+      let res = await this.$http.delete('swiper?id=' + id)
+      if(res.errno === 0 ){
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+        await this.get_allSwiper()
+      }else{
+        this.$message.error(res.errmsg)
+      }
     },
     // 发送修改数据
     send_edit (row) {
       this.edit_type = 1
       this.form = row
-      this.imageUrl = row.url
+      this.imageUrl = row.img_url
       this.dialogFormVisible = true
     },
     // 确认修改
-    edit_swiper () {
-      console.log(this.form)
-      this.$http.post('banner/up_banner', this.form).then(res => {
-        if (res.errno == 0) {
-          this.$message({
-            type: 'success',
-            message: '修改成功！'
-          })
-          this.dialogFormVisible = false
-          this.get_allSwiper()
-        }
-      })
+    async edit_swiper () {
+      this.form.img_url = this.imageUrl
+      let res = await this.$http.put('swiper', this.form)
+      if (res.errno === 0) {
+        this.$message({
+          type: 'success',
+          message: '修改成功！'
+        })
+        this.dialogFormVisible = false
+        this.imageUrl = ''
+        await this.get_allSwiper()
+      } else {
+        this.$message.error(res.errmsg)
+      }
     },
     // 添加轮播图
-    add_swiper () {
-      this.$http.post('banner/add_banner', this.form).then(res => {
-        if (res.errno == 0) {
-          this.$message({
-            type: 'success',
-            message: '添加成功！'
-          })
-          this.dialogFormVisible = false
-          this.get_allSwiper()
-        } else {
-          this.$message.error(res.errmsg)
-        }
-      })
-    },
-
-    del_img (index) {
-      this.img_list.splice(index, 1)
+    async add_swiper () {
+      this.form.imgurl = this.imageUrl
+      let res = await this.$http.post('swiper', this.form)
+      if (res.errno === 0) {
+        this.$message({
+          type: 'success',
+          message: '添加成功！'
+        })
+        this.dialogFormVisible = false
+        this.imageUrl = ''
+        await this.get_allSwiper()
+      } else {
+        this.$message.error(res.errmsg)
+      }
     },
     // 获取所有门店
-    get_allShop () {
-      this.$http.get('store/get_all').then(res => {
-        this.shop = res.data
-      })
+    async get_allShop () {
+      let res = await this.$http.get('shop')
+      this.shop = res.data
     },
     //打开添加
     open_add () {
@@ -158,14 +161,13 @@ export default {
       this.dialogFormVisible = true
     },
     // 获取所有轮播图
-    get_allSwiper () {
-      this.$http.get('banner/banner_all').then(res => {
-        if (res.errno == 0) {
-          this.tableData = res.data
-        } else {
-          this.$message.error(res.errmsg)
-        }
-      })
+    async get_allSwiper () {
+      let res = await this.$http.get('swiper')
+      if (res.errno === 0) {
+        this.tableData = res.data
+      } else {
+        this.$message.error(res.errmsg)
+      }
     }
   }
 }
