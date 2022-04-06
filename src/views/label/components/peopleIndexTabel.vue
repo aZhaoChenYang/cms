@@ -2,7 +2,7 @@
   <!-- 开头 -->
   <div class="labelIndexSelectTable">
     <div>
-      <el-button type="primary" size="medium" @click="dialogVisible = true;bt_type = 1">添加人数</el-button>
+      <el-button size="medium" type="primary" @click="dialogVisible = true">添加人数</el-button>
     </div>
     <!-- 添加标签对话框 -->
     <el-dialog title="添加人数" :visible.sync="dialogVisible">
@@ -39,22 +39,18 @@ export default {
     // 添加标签
     async add_people () {
       this.dialogVisible = false
-      var res = await this.$http.post('people', this.form)
-      if (res.errno === 0) {
-        this.$message({
-          type: 'success',
-          message: '添加成功'
-        })
-        this.form.number = 0
-        this.get_people()
-      }
+      await this.$http.post('people', this.form)
+      this.$message({
+        type: 'success',
+        message: '添加成功'
+      })
+      this.form.number = 0
+      await this.get_people()
     },
     // 获取全部标签
     async get_people () {
-      var res = await this.$http.get('people')
-      if (res.errno === 0) {
-        this.peopledata = res.data
-      }
+      let res = await this.$http.get('people')
+      this.peopledata = res.data
 
     },
     // 删除标签
@@ -64,17 +60,12 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-      let res = await this.$http.delete('people?id=' + id)
-      if (res.errno === 0) {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-        await this.get_people()
-      } else {
-        this.$message.error(res.errmsg)
-      }
-
+      await this.$http.delete('people?id=' + id)
+      this.$message({
+        type: 'success',
+        message: '删除成功!'
+      })
+      await this.get_people()
     },
     cancel () {
       this.dialogVisible = false

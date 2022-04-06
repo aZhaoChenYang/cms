@@ -3,6 +3,7 @@ import axios from 'axios'
 import {
   Api_url
 } from './config'
+import ElementUI from 'element-ui'
 //创建axios实例
 var service = axios.create({
   baseURL: Api_url,
@@ -11,15 +12,26 @@ var service = axios.create({
 
 //添加响应拦截器
 service.interceptors.response.use(function (response) {
-  const res = response.data
-  if (res.errno == 4102) {
-    location.href = '/cms/#/login'
+  // 对响应数据做点什么
+  return response.data
+}, function (error) {
+  if (error.response.status === 401) {
+    ElementUI.Message.error('登录超时，请重新登录')
+    setTimeout(() => {
+      location.href = '/cms/#/login'
+    }, 1000)
+
+  } else if (error.response.status === 500) {
+    ElementUI.Message.error(error.response.data.message)
+  } else if (error.response.status === 400) {
+    ElementUI.Message.error('请求错误')
   }
-  return res
+  return Promise.reject(error)
+
 })
 service.interceptors.request.use(function (request) {
   if (localStorage.getItem('Authorization')) {
-    request.headers.Authorization = localStorage.getItem('Authorization');
+    request.headers.Authorization = localStorage.getItem('Authorization')
   }
   return request
 })
@@ -35,19 +47,7 @@ export default {
       data
     })
   },
-  //便于切换演示版
-  get_show (url, data) {
-    if (IsDemo) {
-      check_demo()
-      return
-    }
-    return service({
-      url: url,
-      method: 'get',
-      data
-    })
-  },
-  //post请求
+//post请求
   post (url, data) {
     return service({
       url: url,
@@ -80,18 +80,6 @@ export default {
     return service({
       url: url,
       method: 'delete',
-      data
-    })
-  },
-  //便于切换演示版
-  put_show (url, data) {
-    if (IsDemo) {
-      check_demo()
-      return
-    }
-    return service({
-      url: url,
-      method: 'put',
       data
     })
   }

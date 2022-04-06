@@ -1,9 +1,9 @@
 <template>
   <div class="page_admin">
-    <div class="adminIndexSeaarch">
-      <el-row class="adminIndexSeaarchRow">
+    <div class="adminIndexSearch">
+      <el-row class="adminIndexSearchRow">
         <el-col :span="2">
-          <el-button type="primary" size="small" @click="dialogVisible = true, type = 1">添加管理员</el-button>
+          <el-button size="small" type="primary" @click="dialogVisible = true; type = 1">添加管理员</el-button>
         </el-col>
       </el-row>
       <!-- 弹出框:添加用户-->
@@ -33,8 +33,8 @@
         </el-row>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="post_adminMsg()" v-if="this.type == 1">确 定</el-button>
-          <el-button type="primary" @click="Up_adminMsg()" v-if="this.type == 2">修改</el-button>
+          <el-button v-if="this.type === 1" type="primary" @click="add_admin()">确 定</el-button>
+          <el-button v-if="this.type === 2" type="primary" @click="up_admin()">修改</el-button>
         </span>
       </el-dialog>
     </div>
@@ -62,8 +62,8 @@
 
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="success" @click="send_editdata(scope.row)">修改</el-button>
-            <el-button type="danger" @click="del_admin(scope.row.Username)">删除</el-button>
+            <el-button type="success" @click="send_editData(scope.row)">修改</el-button>
+            <el-button type="danger" @click="del_admin(scope.row.ID)">删除</el-button>
           </template>
         </el-table-column>
 
@@ -97,36 +97,33 @@ export default {
     async get_allAdmin () {
       this.input = ''
       let res = await this.$http.get('admin')
-      if (res.errno === 0) {
+      if (res.code === 0) {
         this.tableData = res.data
       }
     },
     // 发送修改数据
-    send_editdata (row) {
+    send_editData (row) {
       this.type = 2
-      this.newAdmin =  row
+      this.newAdmin = row
       this.dialogVisible = true
     },
     // 修改管理员信息
-    async Up_adminMsg () {
+    async up_admin () {
       if (this.newAdmin.password === '') {
         this.$message('请输入密码')
         return
       }
-      let res = await this.$http.put('admin', this.newAdmin)
-        if (res.errno === 0) {
-          this.$message({
-            type: 'success',
-            message: '修改成功!'
-          })
-          this.dialogVisible = false
-          this.get_allAdmin()
-        } else {
-          this.$message.error(res.errmsg)
-        }
+      await this.$http.put('admin', this.newAdmin)
+      this.$message({
+        type: 'success',
+        message: '修改成功!'
+      })
+      this.dialogVisible = false
+      await this.get_allAdmin()
+
     },
     // 添加管理员
-    async post_adminMsg () {
+    async add_admin () {
       this.type = 1
       if (this.newAdmin.username === '') {
         this.$message('请输入用户名')
@@ -136,39 +133,31 @@ export default {
         this.$message('请输入密码')
         return
       }
-      let res = await this.$http.post('admin', this.newAdmin)
-      if (res.errno === 0) {
-        this.$message({
-          type: 'success',
-          message: '添加成功'
-        })
-        this.dialogVisible = false
-        this.newAdmin.nickname = ""
-        this.newAdmin.username = ""
-        this.newAdmin.password = ""
-        await this.get_allAdmin()
-      } else {
-        this.$message.error(res.errmsg)
-      }
+      await this.$http.post('admin', this.newAdmin)
+      this.$message({
+        type: 'success',
+        message: '添加成功'
+      })
+      this.dialogVisible = false
+      this.newAdmin.nickname = ''
+      this.newAdmin.username = ''
+      this.newAdmin.password = ''
+      await this.get_allAdmin()
     },
     // 删除管理员
-    async del_admin (username) {
+    async del_admin (id) {
       await this.$confirm('确定删除该管理员吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
-      let res = await this.$http.delete('admin?username=' + username)
-      if (res.errno === 0) {
-        this.$message({
-          type: 'success',
-          message: '删除成功'
-        })
-        this.dialogVisible = false
-        await this.get_allAdmin()
-      } else {
-        this.$message.error(res.errmsg)
-      }
+      await this.$http.delete('admin?id=' + id)
+      this.$message({
+        type: 'success',
+        message: '删除成功'
+      })
+      this.dialogVisible = false
+      await this.get_allAdmin()
 
     }
   }
@@ -183,20 +172,15 @@ export default {
   width: 70%;
 }
 
-.adminIndexSeaarch {
+.adminIndexSearch {
   margin-top: 20px;
   margin-left: 20px;
   padding: 20px;
 }
 
-.adminIndexSeaarchRow {
+.adminIndexSearchRow {
   display: flex;
   align-items: center;
-}
-
-.adminFont {
-  color: white;
-  text-decoration: none;
 }
 
 .adminIndex_el_row {
@@ -205,11 +189,4 @@ export default {
   padding-top: 6px;
 }
 
-.yes {
-  background-color: #800080;
-}
-
-.no {
-  background-color: yellow;
-}
 </style>

@@ -2,7 +2,7 @@
   <!-- 开头 -->
   <div class="labelIndexSelectTable">
     <div>
-      <el-button type="primary" size="medium" @click="dialogVisible = true;bt_type = 1">添加标签</el-button>
+      <el-button size="medium" type="primary" @click="dialogVisible = true">添加标签</el-button>
     </div>
     <!-- 添加标签对话框 -->
     <el-dialog title="添加标签" :visible.sync="dialogVisible">
@@ -28,7 +28,7 @@ export default {
   data () {
     return {
       form: {
-        id: '',
+        id: 0,
         name: '',
       },
       dialogVisible: false,
@@ -40,15 +40,13 @@ export default {
     // 添加标签
     async add_tag () {
       this.dialogVisible = false
-      let res = await this.$http.post('tag', this.form)
-      if (res.errno === 0) {
-        this.$message({
-          type: 'success',
-          message: '添加成功'
-        })
-        this.form.name = ''
-        this.get_tag()
-      }
+      await this.$http.post('tag', this.form)
+      this.$message({
+        type: 'success',
+        message: '添加成功'
+      })
+      this.form.name = ''
+      await this.get_tag()
     },
     // 获取全部标签
     async get_tag () {
@@ -62,18 +60,12 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-
-      let res = await this.$http.delete('tag?id=' + id)
-      if (res.errno === 0) {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-        await this.get_tag()
-      } else {
-        this.$message.error(res.errmsg)
-      }
-
+      await this.$http.delete('tag?id=' + id)
+      this.$message({
+        type: 'success',
+        message: '删除成功!'
+      })
+      await this.get_tag()
     },
     cancel () {
       this.dialogVisible = false

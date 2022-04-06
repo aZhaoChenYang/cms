@@ -50,7 +50,7 @@ export default {
       }
 
       let res = await this.$http.post('login', this.admin)
-      if (res.errno === 0) {
+      if (res.code === 0) {
         console.log(res.data.token)
         this.changeLogin({Authorization: res.data.token})
         await this.$router.push({

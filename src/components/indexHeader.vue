@@ -20,11 +20,11 @@
 </template>
 
 <script>
+
 export default {
   methods: {
     jump_to_login () {
-      this.$http.post('admin/logout').then(res => {
-      })
+      localStorage.clear();
       this.$router.push({
         path: '/login'
       })

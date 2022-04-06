@@ -1,6 +1,6 @@
 <template>
   <div class="dramaAddTable">
-    <el-button size="small" class="shopreturn" @click="shopreturn">返回</el-button>
+    <el-button size="small" class="shopReturn" @click="shopReturn">返回</el-button>
     <el-form ref="form1" :model="form1" label-width="80px">
       <el-row>
         <el-col :span="6">
@@ -40,7 +40,7 @@
       </el-form-item>
     </el-form>
     <el-button type="primary" @click="onSubmit">添加</el-button>
-    <el-button @click="shopreturn">取消</el-button>
+    <el-button @click="shopReturn">取消</el-button>
   </div>
 </template>
 
@@ -58,7 +58,6 @@ export default {
         long: '',
         address: ''
       },
-      value1: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
       center: { // 经纬度
         lng: 117.124954,
         lat: 40.148567
@@ -85,18 +84,14 @@ export default {
         this.$message('请在地图上选择位置')
         return
       }
-      let res = await this.$http.post('shop', this.form1)
-      if (res.errno === 0) {
+       await this.$http.post('shop', this.form1)
         this.$message({
           type: 'success',
           message: '添加成功'
         })
         this.$router.go(-1)
-      } else {
-        this.$message.error(res.errmsg)
-      }
     },
-    shopreturn () {
+    shopReturn () {
       this.$router.push({
         path: '/shopIndex'
       })
@@ -108,13 +103,13 @@ export default {
       BMap,
       map
     }) {
-      var that = this
+      let that = this
       this.BMap = BMap
       this.map = map
       this.zoom = 18
       const point = new BMap.Point(this.center.lng, this.center.lat)
       const marker = new BMap.Marker(point)
-      var geocoder = new BMap.Geocoder()// 用于逆解析
+      let geocoder = new BMap.Geocoder()// 用于逆解析
       // 添加标注点
       map.addOverlay(marker)
       // 点击地图监听事件
@@ -124,7 +119,7 @@ export default {
         })
         // 清除标记
         map.clearOverlays()
-        var point2 = e.point
+        let point2 = e.point
         that.form1.lat = point2.lat
         that.form1.long = point2.lng
         const point = new BMap.Point(point2.lng, point2.lat)
@@ -144,7 +139,7 @@ export default {
   padding: 20px;
 }
 
-.shopreturn {
+.shopReturn {
   margin: 10px;
 }
 
