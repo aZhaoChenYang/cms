@@ -90,18 +90,12 @@ export default {
       localStorage.removeItem('Edit_Data')
     },
     async onSubmit () {
-      let res = await this.$http.put('shop', this.form1)
-      if(res.errno === 0){
-        this.$message({
-          type: 'success',
-          message: '修改成功'
-        })
-        this.$router.go(-1)
-      } else {
-        this.$message.error(res.errmsg)
-      }
-
-
+      await this.$http.put('shop', this.form1)
+      this.$message({
+        type: 'success',
+        message: '修改成功'
+      })
+      this.$router.go(-1)
     },
     shopreturn () {
       this.$router.push({

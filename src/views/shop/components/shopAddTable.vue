@@ -84,12 +84,12 @@ export default {
         this.$message('请在地图上选择位置')
         return
       }
-       await this.$http.post('shop', this.form1)
-        this.$message({
-          type: 'success',
-          message: '添加成功'
-        })
-        this.$router.go(-1)
+      await this.$http.post('shop', this.form1)
+      this.$message({
+        type: 'success',
+        message: '添加成功'
+      })
+      this.$router.go(-1)
     },
     shopReturn () {
       this.$router.push({

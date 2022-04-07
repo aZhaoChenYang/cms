@@ -12,7 +12,7 @@
             <img style="width: 40%;height: 40%;" :src="scope.row.imgurl"/>
           </template>
         </el-table-column>
-        <el-table-column prop="shopName" label="店铺" width="180">
+        <el-table-column prop="shop_name" label="店铺" width="180">
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">

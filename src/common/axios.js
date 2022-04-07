@@ -1,8 +1,6 @@
 /* eslint-disable */
 import axios from 'axios'
-import {
-  Api_url
-} from './config'
+import { Api_url } from './config'
 import ElementUI from 'element-ui'
 //创建axios实例
 var service = axios.create({
@@ -13,7 +11,17 @@ var service = axios.create({
 //添加响应拦截器
 service.interceptors.response.use(function (response) {
   // 对响应数据做点什么
-  return response.data
+  if (response.data.code === 401) {
+    ElementUI.Message.error('登录超时，请重新登录')
+    setTimeout(() => {
+      window.location.href = '/cms/#/login'
+    }, 1000)
+  } else if (response.data.code === 0) {
+    return response.data
+  } else {
+    ElementUI.Message.error(response.data.message)
+    return Promise.reject()
+  }
 }, function (error) {
   if (error.response.status === 401) {
     ElementUI.Message.error('登录超时，请重新登录')

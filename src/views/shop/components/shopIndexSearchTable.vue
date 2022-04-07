@@ -61,12 +61,8 @@ export default {
     // 获取所有店铺
     async get_response () {
       let res = await this.$http.get('shop')
-      if (res.errno === 0) {
         this.tableData = res.data
         this.input = ''
-      } else {
-        this.$message.error(res.errmsg)
-      }
     },
     jump_to_shopEdit (item) {
       localStorage.setItem('Edit_Data', JSON.stringify(item))
@@ -89,16 +85,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       })
-      let res = await this.$http.delete('shop?id=' + id)
-      if (res.errno === 0) {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-        await this.get_response()
-      } else {
-        this.$message.error(res.errmsg)
-      }
+      await this.$http.delete('shop?id=' + id)
+      this.$message({
+        type: 'success',
+        message: '删除成功!'
+      })
+      await this.get_response()
+
     },
     // 条件查找
     ser_name () {
