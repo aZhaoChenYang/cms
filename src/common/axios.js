@@ -9,7 +9,7 @@ var service = axios.create({
 })
 
 //添加响应拦截器
-service.interceptors.response.use(function (response) {
+service.interceptors.response.use(response => {
   // 对响应数据做点什么
   if (response.data.code === 401) {
     ElementUI.Message.error('登录超时，请重新登录')
@@ -22,22 +22,8 @@ service.interceptors.response.use(function (response) {
     ElementUI.Message.error(response.data.message)
     return Promise.reject()
   }
-}, function (error) {
-  if (error.response.status === 401) {
-    ElementUI.Message.error('登录超时，请重新登录')
-    setTimeout(() => {
-      location.href = '/cms/#/login'
-    }, 1000)
-
-  } else if (error.response.status === 500) {
-    ElementUI.Message.error(error.response.data.message)
-  } else if (error.response.status === 400) {
-    ElementUI.Message.error('请求错误')
-  }
-  return Promise.reject(error)
-
 })
-service.interceptors.request.use(function (request) {
+service.interceptors.request.use(request => {
   if (localStorage.getItem('Authorization')) {
     request.headers.Authorization = localStorage.getItem('Authorization')
   }
