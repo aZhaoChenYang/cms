@@ -25,7 +25,7 @@
         </el-table-column>
         <el-table-column label="剧本封面" width="180">
           <template slot-scope="scope" >
-              <img style="width: 40%;height: 40%;" :src="scope.row.url"/>
+              <img style="width: 40%;height: 40%;" :src="scope.row.imgurl"/>
           </template>
         </el-table-column>
         <el-table-column prop="time" label="预计时长/小时">
@@ -35,7 +35,7 @@
         </el-table-column>
         <el-table-column prop="girls" label="女生人数" show-overflow-tooltip>
         </el-table-column>
-        <el-table-column prop="store_name" label="门店">
+        <el-table-column prop="shop_name" label="门店">
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="200">
           <template slot-scope="scope">
@@ -63,14 +63,9 @@ export default {
   methods: {
     // 查询全部数据
     get_script () {
-      this.$http.get('script/script_all').then(res => {
-        if(res.errno == 0){
+      this.$http.get('script').then(res => {
           this.tableData = res.data
           this.input = ''
-        } else {
-          this.tableData = []
-          this.input = []
-        }
       })
     },
     jump_to_dramaEdit (item) {
@@ -106,16 +101,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$http.delete('script/del_script?id=' + id).then(res => {
-          if (res.errno == 0){
+        this.$http.delete('script?id=' + id).then(res => {
             this.$message({
               type: 'success',
               message: '删除成功!'
             })
             this.get_script()
-          } else {
-            this.$message.error(res.errno)
-          }
+
 
         })
       })

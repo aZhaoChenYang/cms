@@ -17,7 +17,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="medium" type="success" @click="send_edit(scope.row)">修改</el-button>
-            <el-button size="medium" type="danger" @click="del_swiper(scope.row.id)">删除</el-button>
+            <el-button size="medium" type="danger" @click="del_swiper(scope.row.ID)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -40,8 +40,8 @@
       <el-row class="swiperIndex_el_row">
         <el-col :span="4">店铺</el-col>
         <el-col :span="13">
-          <el-select v-model="form.shop_name" placeholder="请选择门店">
-            <el-option v-for="(item,index) in shop" :label="item.name" :value="item.name" :key="index"></el-option>
+          <el-select v-model="form.shop_id" placeholder="请选择门店">
+            <el-option v-for="(item,index) in shop" :label="item.name" :value="item.ID" :key="index"></el-option>
           </el-select>
         </el-col>
       </el-row>
@@ -69,9 +69,9 @@ export default {
       tableData: [],
       dialogFormVisible: false,
       form: {
-        id: '',
+        ID: '',
         imgurl: '',
-        shop_name: ''
+        shop_id: ''
       },
       shop: [],
       edit_type: 0,

@@ -20,21 +20,18 @@ export default {
   },
   methods: {
     get_allSet () {
-      this.$http.get('admin/get_qiniu').then(res => {
+      this.$http.get('setting?type=3').then(res => {
         this.set = res.data
       })
     },
 
     edit_set () {
-      this.$http.post('admin/update_qiniu', this.set).then(res => {
-        if (res.errno == 0) {
+      this.$http.put('setting', this.set).then(res => {
           this.$message({
             type: 'success',
             message: '修改成功'
           })
-        } else {
-          this.$message.error(res.errmsg)
-        }
+
       })
     }
   },
