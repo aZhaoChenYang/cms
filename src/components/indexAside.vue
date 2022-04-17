@@ -20,7 +20,11 @@
         <i class="el-icon-s-custom"></i>
         <span slot="title" class="indexAsideFont">用户</span>
       </el-menu-item>
-      <el-menu-item index="5" class="indexAside" @click="jump_to_label">
+      <el-menu-item index="5" class="indexAside" @click="jump_to_order">
+        <i class="el-icon-discount"></i>
+        <span slot="title" class="indexAsideFont">订单</span>
+      </el-menu-item>
+      <el-menu-item index="6" class="indexAside" @click="jump_to_label">
         <i class="el-icon-discount"></i>
         <span slot="title" class="indexAsideFont">标签</span>
       </el-menu-item>
@@ -32,7 +36,7 @@
         <i class="el-icon-picture-outline-round"></i>
         <span slot="title" class="indexAsideFont">轮播图</span>
       </el-menu-item>
-      <el-menu-item index="6" class="indexAside" @click="jump_to_set">
+      <el-menu-item index="9" class="indexAside" @click="jump_to_set">
         <i class="el-icon-setting"></i>
         <span slot="title" class="indexAsideFont">配置</span>
       </el-menu-item>
@@ -52,6 +56,11 @@ export default {
     jump_to_index () {
       this.$router.push({
         path: '/'
+      })
+    },
+    jump_to_order () {
+      this.$router.push({
+        path: '/orderIndex'
       })
     },
     jump_to_drama () {

@@ -20,13 +20,13 @@
         border
         style="width: 95%" height="700px">
         <el-table-column
-          prop="user_id"
+          prop="ID"
           label="序号"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="openid"
-          label="appid"
+          prop="phone"
+          label="手机号"
           width="180">
         </el-table-column>
         <el-table-column
@@ -35,7 +35,7 @@
           width="180">
         </el-table-column>
         <el-table-column
-          prop="vip"
+          prop="vipid"
           label="会员等级"
           width="180">
         </el-table-column>
@@ -82,43 +82,43 @@ export default {
   },
   methods: {
     // 获取所有门店
-    get_allUser () {
-      this.$http.get('user/get_all').then(res => {
-        this.tableData = res.data
-      })
+    async get_allUser () {
+      let res = await this.$http.get('user')
+      let data = res.data
+      for (let i = 0; i < data.length; i++) {
+        data[i].vipid = this.vip[data[i].vip].name
+      }
+      this.tableData = data
     },
     // 发送修改数据
     send_edit (row) {
-      this.update_userid = row.user_id
+      this.update_userid = row.ID
       console.log(row)
       this.vip_id = row.vipid
       this.dialogFormVisible = true
     },
-    edit_user() {
-      this.$http.post('user/up_user', {id: this.update_userid, vip: this.vip_id}).then(res => {
-        if(res.errno == 0) {
-          this.$message.success(res.errmsg)
-          this.dialogFormVisible = false
-          this.update_userid = -1
-          this.get_allUser()
-        }else {
-          this.$message.error(res.errmsg)
-        }
+    async edit_user () {
+      await this.$http.put('user', {
+        id: this.update_userid,
+        vip: this.vip_id
       })
-    },
-    // 条件查找
-    ser_name () {
-      const name = this.input
-      const arr = []
-      for (const k in this.tableData) {
-        const v = this.tableData[k]
-        if (v.nickname.indexOf(name) >= 0) {
-          arr.push(v)
-        }
+      this.dialogFormVisible = false
+      this.update_userid = -1
+      this.get_allUser()
+  },
+  // 条件查找
+  ser_name () {
+    const name = this.input
+    const arr = []
+    for (const k in this.tableData) {
+      const v = this.tableData[k]
+      if (v.nickname.indexOf(name) >= 0) {
+        arr.push(v)
       }
-      this.tableData = arr
     }
+    this.tableData = arr
   }
+}
 
 }
 </script>

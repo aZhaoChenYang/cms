@@ -18,7 +18,7 @@
     </el-dialog>
     <!-- 显示列表 -->
     <div class="xia">
-      <el-tag v-for="item in peopledata" closable @close="del_data(item.ID)">{{ item.number }}人</el-tag>
+      <el-tag v-for="item in peopledata" closable @close="del_data(item.id)">{{ item.number }}人</el-tag>
     </div>
   </div>
 </template>

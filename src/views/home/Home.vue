@@ -6,7 +6,6 @@
           <div class="tishi">
             <div class="ts_01">
               <div class="ts_01_l">{{ item.types }}</div>
-              <div :class="item.state?'ts_01_r':'ts_01_m'">{{ item.wen }}</div>
             </div>
             <div class="ts_02">
               <div class="ts_02_l">
@@ -29,29 +28,12 @@ export default {
         'types': '剧本总数',
         'num': 0,
         'mess': '剧本总数',
-        'state': 1,
-        'wen': '总',
-        'duibi': 0,
-        'fudu': 0
       },
         {
           'types': '用户数',
           'num': 0,
           'mess': '用户数',
-          'state': 0,
-          'wen': '总',
-          'duibi': 0,
-          'fudu': 0
         },
-        {
-          'types': '店铺数',
-          'num': 0,
-          'mess': '店铺数',
-          'state': 1,
-          'wen': '总',
-          'duibi': 0,
-          'fudu': 1
-        }
       ],
     }
   },
@@ -59,12 +41,9 @@ export default {
     this.get_info()
   },
   methods: {
-    get_info () {
-      this.$http.get('admin/get_home').then(res => {
-        for (let v in this.message) {
-          this.message[v].num = res.data[v]
-        }
-      })
+    async get_info () {
+      let res = await this.$http.get('index')
+      this.message = res.data
     }
   }
 }

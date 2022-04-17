@@ -45,7 +45,7 @@
         style="width: 100%"
         border>
         <el-table-column
-          prop="ID"
+          prop="id"
           label="序号"
           width="180">
         </el-table-column>
@@ -63,7 +63,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="success" @click="send_editData(scope.row)">修改</el-button>
-            <el-button type="danger" @click="del_admin(scope.row.ID)">删除</el-button>
+            <el-button type="danger" @click="del_admin(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
 
@@ -119,6 +119,12 @@ export default {
         message: '修改成功!'
       })
       this.dialogVisible = false
+      this.newAdmin = {
+        id: 0,
+        username: '',
+        password: '',
+        nickname: ''
+      }
       await this.get_allAdmin()
 
     },
@@ -139,8 +145,12 @@ export default {
         message: '添加成功'
       })
       this.dialogVisible = false
-      this.newAdmin.nickname = ''
-      this.newAdmin.username = ''
+      this.newAdmin = {
+        id: 0,
+        username: '',
+        password: '',
+        nickname: ''
+      }
       this.newAdmin.password = ''
       await this.get_allAdmin()
     },
@@ -158,7 +168,6 @@ export default {
       })
       this.dialogVisible = false
       await this.get_allAdmin()
-
     }
   }
 

@@ -10,6 +10,7 @@ import userIndex from '../views/user/userIndex.vue'
 import adminIndex from '../views/admin/adminIndex.vue'
 import labelIndex from '../views/label/labelIndex.vue'
 import setIndex from '../views/set/setIndex.vue'
+import orderIndex from '../views/order/orderIndex'
 
 Vue.use(Router)
 
@@ -51,6 +52,10 @@ export default new Router({
       path: '/labelIndex',
       name: 'labelIndex',
       component: labelIndex
+    }, {
+      path: '/orderIndex',
+      name: 'orderIndex',
+      component: orderIndex
     }, {
       path: '/setIndex',
       name: 'setIndex',

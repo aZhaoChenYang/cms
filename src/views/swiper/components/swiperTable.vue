@@ -5,7 +5,7 @@
     </div>
     <div class="swiperTable">
       <el-table :data="tableData" border>
-        <el-table-column prop="ID" label="编号" width="80">
+        <el-table-column prop="id" label="编号" width="80">
         </el-table-column>
         <el-table-column label="缩略图" width="180">
           <template slot-scope="scope">
@@ -17,7 +17,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="medium" type="success" @click="send_edit(scope.row)">修改</el-button>
-            <el-button size="medium" type="danger" @click="del_swiper(scope.row.ID)">删除</el-button>
+            <el-button size="medium" type="danger" @click="del_swiper(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -79,8 +79,8 @@ export default {
     }
   },
   mounted () {
-    this.get_allSwiper()
     this.get_allShop()
+    this.get_allSwiper()
   },
   methods: {
     async upImg_back_fun (res) {
@@ -151,6 +151,13 @@ export default {
     // 获取所有轮播图
     async get_allSwiper () {
       let res = await this.$http.get('swiper')
+      res.data.forEach(item => {
+        this.shop.forEach(shop => {
+          if (item.shop_id === shop.ID) {
+            item.shop_name = shop.name
+          }
+        })
+      })
       this.tableData = res.data
     }
   }
