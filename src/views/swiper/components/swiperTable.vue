@@ -78,9 +78,9 @@ export default {
       formLabelWidth: '120px',
     }
   },
-  mounted () {
-    this.get_allShop()
-    this.get_allSwiper()
+  async mounted () {
+    await this.get_allShop()
+    await this.get_allSwiper()
   },
   methods: {
     async upImg_back_fun (res) {
@@ -153,7 +153,7 @@ export default {
       let res = await this.$http.get('swiper')
       res.data.forEach(item => {
         this.shop.forEach(shop => {
-          if (item.shop_id === shop.ID) {
+          if (item.shop_id === shop.id) {
             item.shop_name = shop.name
           }
         })

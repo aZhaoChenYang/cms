@@ -20,7 +20,7 @@
     </div>
     <div class="dramaIndexSelectTable">
       <el-table :data="tableData" border style="width: 90%">
-        <el-table-column prop="ID" label="编号" width="80" fixed>
+        <el-table-column prop="id" label="编号" width="80" fixed>
         </el-table-column>
         <el-table-column prop="name" label="门店名称" width="180">
         </el-table-column>

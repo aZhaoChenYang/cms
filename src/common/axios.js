@@ -22,7 +22,12 @@ service.interceptors.response.use(response => {
     ElementUI.Message.error(response.data.message)
     return Promise.reject()
   }
+}, error => {
+  // 对响应错误做点什么
+  ElementUI.Message.error('网络错误，请稍后重试')
+  return Promise.reject(error)
 })
+
 service.interceptors.request.use(request => {
   if (localStorage.getItem('Authorization')) {
     request.headers.Authorization = localStorage.getItem('Authorization')
@@ -31,8 +36,6 @@ service.interceptors.request.use(request => {
 })
 
 export default {
-  service,
-
   //get请求
   get (url, data) {
     return service({
